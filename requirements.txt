@@ -1,0 +1,7 @@
+robotframework
+robotframework-seleniumlibrary
+robotframework-jsonlibrary
+openpyxl
+allure-robotframework
+selenium
+faker
