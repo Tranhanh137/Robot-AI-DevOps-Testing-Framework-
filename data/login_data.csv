@@ -1,0 +1,3 @@
+username,password,login_url,expected_url,logout_url
+anhtester@email.com,AnhTester@2023#,https://cms.anhtester.com/users/login,https://cms.anhtester.com/dashboard,https://cms.anhtester.com/logout
+customer2025@gmail.com,123456,https://cms.anhtester.com/users/login,https://cms.anhtester.com/dashboard,https://cms.anhtester.com/logout

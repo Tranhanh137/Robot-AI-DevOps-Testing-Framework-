@@ -14,5 +14,20 @@
         "password": "123456",
         "expected_url": "https://cms.anhtester.com/dashboard",
         "logout_url": "https://cms.anhtester.com/logout"
+    },
+    {
+        "test_case_name": "L_3",
+        "login_url": "https://cms.anhtester.com/users/login",
+        "username": "seller@example.com",
+        "password": "123456",
+        "expected_url": "https://cms.anhtester.com/seller/dashboard",
+        "logout_url": "https://cms.anhtester.com/logout"
+    },
+    {
+        "test_case_name": "L_4",
+        "login_url": "https://cms.anhtester.com/users/login",
+        "username": "",
+        "password": "123456",
+        "text_displayed": "The email field is required when phone is not present."
     }
 ]

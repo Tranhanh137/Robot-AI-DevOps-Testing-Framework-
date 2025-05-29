@@ -29,12 +29,23 @@ enterText
     Wait Until Element Is Visible    ${locator}    timeout=10s
     Input Text    ${locator}    ${text}
     Sleep    ${DELAY_FAST}  
+
+clearText
+    [Arguments]    ${locator}    ${should_clear}=None
+    Run Keyword If    '${should_clear}' != 'None'    Clear Element Text    ${locator}
+    Sleep    ${DELAY_FAST}
     
 clickButton
     [Arguments]    ${locator}
     Wait Until Element Is Visible    ${locator}    timeout=10s
     Click Element    ${locator}
     Sleep    ${DELAY_MEDIUM}
+
+scrollToElement
+    [Arguments]    ${locator}
+    Wait Until Element Is Visible    ${locator}    timeout=10s
+    Scroll Element Into View    ${locator}
+    Sleep    ${DELAY_FAST}
 
 verifyCurrentUrl
     [Arguments]    ${expected_url}

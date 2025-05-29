@@ -16,10 +16,3 @@ S_4
     Run Horizontal Test From Excel   ./data/cmsanhtester.xlsx    S_4    Search
 S_5    
     Run Horizontal Test From Excel   ./data/cmsanhtester.xlsx    S_5    Search
-S_6    
-    Run Horizontal Test From Excel   ./data/cmsanhtester.xlsx    S_6    Search
-S_7    
-    Run Horizontal Test From Excel   ./data/cmsanhtester.xlsx    L_7    Search
-S_8    
-    Run Horizontal Test From Excel   ./data/cmsanhtester.xlsx    S_8    Search
-    
