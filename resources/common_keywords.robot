@@ -23,6 +23,7 @@ ${DELAY_SLOW}      5s
 #     Run Keyword And Ignore Error    Open Browser    about:blank    chrome    options=${chrome_options}
 #     Log    Browser opened successfully    level=INFO
 #     Maximize Browser Window
+
 Open Chrome Browser
     Log    Bắt đầu mở trình duyệt Chrome    level=INFO
     ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    modules=sys
@@ -51,10 +52,20 @@ clearText
     Run Keyword If    '${should_clear}' != 'None'    Clear Element Text    ${locator}
     Sleep    ${DELAY_FAST}
     
+# clickButton
+#     [Arguments]    ${locator}
+#     Wait Until Element Is Visible    ${locator}    timeout=10s
+#     Click Element    ${locator}
+#     Sleep    ${DELAY_MEDIUM}
+
 clickButton
     [Arguments]    ${locator}
     Wait Until Element Is Visible    ${locator}    timeout=10s
-    Click Element    ${locator}
+    Scroll Element Into View    ${locator}
+    # Thử click bằng Selenium, bỏ qua lỗi nếu không thành công
+    ${status}=    Run Keyword And Return Status    Click Element    ${locator}
+    # Nếu click thất bại, thử dùng JavaScript
+    Run Keyword If    not ${status}    Run Keyword And Ignore Error    Execute JavaScript    document.evaluate("${locator}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click()
     Sleep    ${DELAY_MEDIUM}
 
 scrollToElement
