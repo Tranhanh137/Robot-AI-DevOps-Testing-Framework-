@@ -144,7 +144,7 @@ jobs:
         continue-on-error: true
         run: |
           # Chạy bằng X virtual framebuffer để hỗ trợ GUI headless
-          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output .\testcase\login.robot
+          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output testcase/
 
       - name: Generate Allure Report
         run: |
@@ -157,4 +157,3 @@ jobs:
           publish_dir: ./output/allure
           publish_branch: gh-pages
           force_orphan: true
-          
