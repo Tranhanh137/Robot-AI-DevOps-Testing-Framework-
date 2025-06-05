@@ -10,42 +10,48 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install Python dependencies
         run: |
           pip install -r requirements.txt
           pip install webdriver-manager
-          npm install -g allure-commandline
 
-      - name: Install Google Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip jq xvfb libxi6
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
-          google-chrome --version
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-      - name: Install ChromeDriver using webdriver-manager
-        run: |
-          python -m webdriver_manager.chrome --driver-version=latest
+      - name: Install Allure
+        run: npm install -g allure-commandline
 
-      - name: Run Robot Framework tests with Allure (headless mode)
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: '137.0.7151.68'
+
+      - name: Install ChromeDriver
         run: |
-          # Chạy bằng X virtual framebuffer để hỗ trợ GUI headless
-          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output testcase/
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+          python -m webdriver_manager.chrome --driver-version=$CHROME_VERSION
+
+      - name: Run Robot Framework tests
+        run: |
+          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output --variable BROWSER:chrome --variable BROWSER_OPTIONS:"--headless=new;--no-sandbox;--disable-dev-shm-usage" testcase/
+        continue-on-error: false
 
       - name: Generate Allure Report
-        run: |
-          allure generate output/allure-results -o output/allure --clean
+        run: allure generate output/allure-results -o output/allure --clean
 
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./output/allure
