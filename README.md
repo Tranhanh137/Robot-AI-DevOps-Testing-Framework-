@@ -67,7 +67,6 @@ allure generate output/allure-results -o ./output/allure
 allure open output/allure
 
 
-
 ## 🔄 CI/CD  
 - Tự động chạy test khi push code (GitHub Actions) 
 
