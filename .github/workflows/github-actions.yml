@@ -65,7 +65,6 @@ jobs:
           robot --version
           pip show robotframework-seleniumlibrary
           pip show allure-robotframework
-          pip show robotframework-requests
           pip show openpyxl
 
       - name: Run Robot Framework tests with Allure (headless mode)
