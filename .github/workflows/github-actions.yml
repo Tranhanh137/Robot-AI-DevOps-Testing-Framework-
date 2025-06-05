@@ -72,13 +72,13 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install robotframework robotframework-seleniumlibrary allure-robotframework
+          pip install robotframework robotframework-seleniumlibrary allure-robotframework openpyxl
           npm install -g allure-commandline
 
       - name: Install Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip jq xvfb libxi6
+          sudo apt-get install -y wget unzip jq xvfb libxi6 libgconf-2-4
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
           google-chrome --version
@@ -93,16 +93,36 @@ jobs:
           sudo chmod +x /usr/local/bin/chromedriver
           chromedriver --version
 
+      - name: Check Data Directory and Excel File
+        run: |
+          ls -la data/ || echo "Data directory not found!"
+          test -f data/cmsanhtester.xlsx || echo "Excel file data/cmsanhtester.xlsx not found!"
+
       - name: Run Robot Framework tests with Allure (headless mode)
         run: |
           export DISPLAY=:99
           Xvfb :99 -ac -screen 0 1920x1080x24 &
           sleep 3
-          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output testcase/
+          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output --loglevel DEBUG testcase/
+
+      - name: Check Allure Results
+        run: |
+          ls -la output/allure-results || echo "Allure results directory not found!"
 
       - name: Generate Allure Report
         run: |
           allure generate output/allure-results -o output/allure --clean
+
+      - name: Check Allure Report
+        run: |
+          ls -la output/allure || echo "Allure report directory not found!"
+
+      - name: Upload Allure Results Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: output/
 
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
