@@ -92,8 +92,8 @@ jobs:
 
       - name: Run Robot Framework tests with Allure (headless mode)
         run: |
-          # Chạy bằng X virtual framebuffer để hỗ trợ GUI headless
-          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output testcase/
+          # Chạy bằng X virtual framebuffer, bật log chi tiết
+          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output --loglevel TRACE --console verbose testcase/
 
       - name: Generate Allure Report
         if: always()  # Chạy ngay cả khi test fail
