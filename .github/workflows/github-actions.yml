@@ -82,15 +82,17 @@ jobs:
           node-version: '16'
 
       - name: Install Allure Commandline
-        run: npm install -g allure-commandline@2.19.0
+        run: |
+          npm install -g allure-commandline@2.19.0
 
       - name: Check Allure version
-        run: allure --version
+        run: |
+          allure --version
 
       - name: Install Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+          sudo apt-get install -y wget unzip xvfb libxi6 libnss3 libasound2 fonts-liberation
           wget -q -O chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i chrome.deb || sudo apt-get -f install -y
           google-chrome --version
@@ -102,8 +104,13 @@ jobs:
           path = ChromeDriverManager().install()
           print(path)
           EOF
-          # Giả sử ChromeDriver được tải về ~/.wdm/drivers/...
-          sudo mv ~/.wdm/drivers/chromedriver/linux64/114.0.5735.90/chromedriver /usr/local/bin/chromedriver
+          # Di chuyển ChromeDriver vào /usr/local/bin để Selenium/Robot có thể gọi
+          DRIVER_PATH=$(python - <<EOF
+          from webdriver_manager.chrome import ChromeDriverManager
+          print(ChromeDriverManager().install())
+          EOF
+          )
+          sudo mv $DRIVER_PATH /usr/local/bin/chromedriver
           sudo chmod +x /usr/local/bin/chromedriver
           chromedriver --version
 
@@ -116,7 +123,9 @@ jobs:
                   testcase/
 
       - name: List Allure results
-        run: ls -l output/allure-results
+        run: |
+          ls -l output/allure-results || echo "Folder allure-results không tồn tại hoặc trống"
+          ls -l output/allure-results/* || echo "Không thấy file nào trong allure-results"
 
       - name: Generate Allure Report
         run: |
@@ -127,3 +136,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./output/allure
+
