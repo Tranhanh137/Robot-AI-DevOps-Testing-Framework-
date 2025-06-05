@@ -10,94 +10,42 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: Install Python dependencies
         run: |
-          pip install robotframework robotframework-seleniumlibrary allure-robotframework webdriver-manager
+          pip install -r requirements.txt
+          pip install webdriver-manager
+          npm install -g allure-commandline
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install Allure
-        run: npm install -g allure-commandline
-
-      - name: Install system dependencies for Chrome
+      - name: Install Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            fonts-liberation \
-            libasound2 \
-            libatk-bridge2.0-0 \
-            libatk1.0-0 \
-            libatspi2.0-0 \
-            libcairo2 \
-            libcups2 \
-            libdrm2 \
-            libgbm1 \
-            libgtk-3-0 \
-            libnspr4 \
-            libnss3 \
-            libpango-1.0-0 \
-            libx11-6 \
-            libxcb1 \
-            libxcomposite1 \
-            libxdamage1 \
-            libxext6 \
-            libxfixes3 \
-            libxkbcommon0 \
-            libxrandr2 \
-            xdg-utils \
-            wget \
-            unzip \
-            jq \
-            xvfb \
-            libxi6 \
-            libgconf-2-4
+          sudo apt-get install -y wget unzip jq xvfb libxi6
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
+          google-chrome --version
 
-      - name: Install Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: '136.0.7103.92'
-
-      - name: Install ChromeDriver
+      - name: Install ChromeDriver using webdriver-manager
         run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
-          python -m webdriver_manager.chrome --driver-version=$CHROME_VERSION
-          sudo ln -s ~/.wdm/drivers/chromedriver/linux64/$CHROME_VERSION/chromedriver /usr/local/bin/chromedriver
-          chromedriver --version
+          python -m webdriver_manager.chrome --driver-version=latest
 
-      - name: Run Robot Framework tests
-        env:
-          DISPLAY: :99
+      - name: Run Robot Framework tests with Allure (headless mode)
         run: |
-          Xvfb :99 -screen 0 1920x1080x24 & sleep 3
-          robot --listener allure_robotframework:output/allure-results --outputdir output \
-                --variable BROWSER:chrome \
-                --variable BROWSER_OPTIONS:"--headless=new;--no-sandbox;--disable-dev-shm-usage;--disable-gpu;--window-size=1920,1080;--disable-extensions;--disable-features=NetworkService,NetworkServiceInProcess" \
-                testcase/
-        continue-on-error: false
+          # Chạy bằng X virtual framebuffer để hỗ trợ GUI headless
+          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output testcase/
 
       - name: Generate Allure Report
-        run: allure generate output/allure-results -o output/allure --clean
+        run: |
+          allure generate output/allure-results -o output/allure --clean
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./output/allure
-
-      - name: Upload test logs (on failure)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-logs
-          path: output/
