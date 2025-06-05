@@ -33,17 +33,24 @@ jobs:
       - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: '136.0.7103.92' # Khớp với phiên bản Chrome trong log
+          chrome-version: '136.0.7103.92'
 
       - name: Install ChromeDriver
         run: |
           CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
           python -m webdriver_manager.chrome --driver-version=$CHROME_VERSION
-          chromedriver --version # Kiểm tra phiên bản ChromeDriver
+          sudo ln -s ~/.wdm/drivers/chromedriver/linux64/$CHROME_VERSION/chromedriver /usr/local/bin/chromedriver
+          chromedriver --version
 
       - name: Run Robot Framework tests
+        env:
+          DISPLAY: :99
         run: |
-          xvfb-run robot --listener allure_robotframework:output/allure-results --outputdir output --variable BROWSER:chrome --variable BROWSER_OPTIONS:"--headless=new;--no-sandbox;--disable-dev-shm-usage;--disable-gpu;--window-size=1920,1080" testcase/
+          Xvfb :99 & sleep 3
+          robot --listener allure_robotframework:output/allure-results --outputdir output \
+                --variable BROWSER:chrome \
+                --variable BROWSER_OPTIONS:"--headless=chrome --no-sandbox --disable-dev-shm-usage --disable-gpu --window-size=1920,1080" \
+                testcase/
         continue-on-error: false
 
       - name: Generate Allure Report
