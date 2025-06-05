@@ -35,10 +35,10 @@ Open Chrome Browser
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --headless
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-gpu
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --no-sandbox
+    Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --window-size=1920,1080
     Log    Cấu hình Chrome options: ${chrome_options}    level=INFO
     Run Keyword And Ignore Error    Open Browser    about:blank    chrome    options=${chrome_options}
     Log    Mở trình duyệt thành công    level=INFO
-    Run Keyword And Ignore Error    Maximize Browser Window
 
 enterText
     [Arguments]    ${locator}    ${text}
