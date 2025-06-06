@@ -7,39 +7,39 @@ ${DELAY_MEDIUM}    3s
 ${DELAY_SLOW}      5s
 
 *** Keywords ***
-# Open Chrome Browser
-#     Log    Starting to open Chrome browser    level=INFO
-#     ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    modules=sys
-#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-notifications
-#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --password-store=basic
-#     # Tắt các flags liên quan đến Password Manager
-#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-features=PasswordManagerEnabled,PasswordLeakDetection,SafetyCheck,PasswordCheckup
-#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --incognito
-#     # Thêm flag để tắt Password Manager
-#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --flag-switches-begin
-#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-password-manager
-#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --flag-switches-end
-#     Log    Chrome options set: ${chrome_options}    level=INFO
-#     Run Keyword And Ignore Error    Open Browser    about:blank    chrome    options=${chrome_options}
-#     Log    Browser opened successfully    level=INFO
-#     Maximize Browser Window
-
 Open Chrome Browser
-    Log    Bắt đầu mở trình duyệt Chrome    level=INFO
+    Log    Starting to open Chrome browser    level=INFO
     ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    modules=sys
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-notifications
+    Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --password-store=basic
+    # Tắt các flags liên quan đến Password Manager
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-features=PasswordManagerEnabled,PasswordLeakDetection,SafetyCheck,PasswordCheckup
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --incognito
+    # Thêm flag để tắt Password Manager
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --flag-switches-begin
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-password-manager
     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --flag-switches-end
-    Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --headless
-    Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-gpu
-    Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --no-sandbox
-    Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --window-size=1920,1080
-    Log    Cấu hình Chrome options: ${chrome_options}    level=INFO
+    Log    Chrome options set: ${chrome_options}    level=INFO
     Run Keyword And Ignore Error    Open Browser    about:blank    chrome    options=${chrome_options}
-    Log    Mở trình duyệt thành công    level=INFO
+    Log    Browser opened successfully    level=INFO
+    Maximize Browser Window
+
+# Open Chrome Browser
+#     Log    Bắt đầu mở trình duyệt Chrome    level=INFO
+#     ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    modules=sys
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-notifications
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-features=PasswordManagerEnabled,PasswordLeakDetection,SafetyCheck,PasswordCheckup
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --incognito
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --flag-switches-begin
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-password-manager
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --flag-switches-end
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --headless
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --disable-gpu
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --no-sandbox
+#     Run Keyword And Ignore Error    Call Method    ${chrome_options}    add_argument    --window-size=1920,1080
+#     Log    Cấu hình Chrome options: ${chrome_options}    level=INFO
+#     Run Keyword And Ignore Error    Open Browser    about:blank    chrome    options=${chrome_options}
+#     Log    Mở trình duyệt thành công    level=INFO
 
 enterText
     [Arguments]    ${locator}    ${text}
